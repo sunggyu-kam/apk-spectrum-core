@@ -33,11 +33,12 @@ https://android.googlesource.com/platform/frameworks/base/+/master/core/java/and
     <sdk-info apiLevel="26" platformVersion="Android 8.0" versionCode="O" codeName="Oreo" icon="/icons/logo/oreo.png"/>
     <sdk-info apiLevel="27" platformVersion="Android 8.1" versionCode="O_MR1" codeName="O MR1" icon="/icons/logo/oreo.png"/>
     <sdk-info apiLevel="28" platformVersion="Android 9" versionCode="P" codeName="Pie" icon="/icons/logo/pie.png"/>
-    <sdk-info apiLevel="29" platformVersion="Android 10" versionCode="Q" codeName="Android 10" icon="/icons/logo/q.png"/>
-    <sdk-info apiLevel="30" platformVersion="Android 11" versionCode="R" codeName="Android 11" icon="/icons/logo/r.png"/>
-    <sdk-info apiLevel="31" platformVersion="Android 12" versionCode="S" codeName="Android 12" icon="/icons/logo/s.png"/>
-    <sdk-info apiLevel="32" platformVersion="Android 12L" versionCode="S_V2" codeName="Android 12L" icon="/icons/logo/s.png"/>
-    <sdk-info apiLevel="33" platformVersion="Android 13" versionCode="T" codeName="TIRAMISU" icon="/icons/logo/t.png"/>
-    <sdk-info apiLevel="34" platformVersion="Android 14" versionCode="U" codeName="UPSIDE_DOWN_CAKE" icon="/icons/logo/u.png"/>
-    <sdk-info apiLevel="35" platformVersion="Android 15" versionCode="V" codeName="Vanilla Ice Cream" icon="/icons/logo/v.png"/>
+    <sdk-info apiLevel="29" platformVersion="Android 10" versionCode="Q" codeName="Android10" icon="/icons/logo/q.png"/>
+    <sdk-info apiLevel="30" platformVersion="Android 11" versionCode="R" codeName="Android11" icon="/icons/logo/r.png"/>
+    <sdk-info apiLevel="31" platformVersion="Android 12" versionCode="S" codeName="Android12" icon="/icons/logo/s.png"/>
+    <sdk-info apiLevel="32" platformVersion="Android 12L" versionCode="S_V2" codeName="Android12L" icon="/icons/logo/s.png"/>
+    <sdk-info apiLevel="33" platformVersion="Android 13" versionCode="TIRAMISU" codeName="Android13" icon="/icons/logo/t.png"/>
+    <sdk-info apiLevel="34" platformVersion="Android 14" versionCode="UPSIDE_DOWN_CAKE" codeName="Android14" icon="/icons/logo/u.png"/>
+    <sdk-info apiLevel="35" platformVersion="Android 15" versionCode="VANILLA_ICE_CREAM" codeName="Android15" icon="/icons/logo/v.png"/>
+    <sdk-info apiLevel="36" platformVersion="Android 16" versionCode="BAKLAVA" codeName="Android16" icon="/icons/logo/b.png"/>
 </resources>
