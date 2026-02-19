@@ -21,14 +21,19 @@
 //
 #include <androidfw/misc.h>
 
-#include <sys/stat.h>
+#include "android-base/logging.h"
+
+#ifdef __linux__
+#include <sys/statvfs.h>
+#include <sys/vfs.h>
+#endif  // __linux__
+
 #include <cstring>
-#include <errno.h>
 #include <cstdio>
+#include <errno.h>
+#include <sys/stat.h>
 
 #include <android-base/utf8.h>
-
-using namespace android;
 
 /* 
  * If you use another encoding on Windows, you solved the problem that you can't open the APK.
@@ -78,8 +83,7 @@ FileType getFileType(const char* fileName)
         if (errno == ENOENT || errno == ENOTDIR)
             return kFileTypeNonexistent;
         else {
-            fprintf(stderr, "getFileType got errno=%d on '%s'\n",
-                errno, fileName);
+            PLOG(ERROR) << "getFileType(): stat(" << fileName << ") failed";
             return kFileTypeUnknown;
         }
     } else {
@@ -109,14 +113,52 @@ FileType getFileType(const char* fileName)
 /*
  * Get a file's modification date.
  */
-time_t getFileModDate(const char* fileName)
-{
+time_t getFileModDate(const char* fileName) {
     struct stat sb;
-
-    if (::android::base::utf8::stat(fileName, &sb) < 0)
-        return (time_t) -1;
-
+    if (::android::base::utf8::stat(fileName, &sb) < 0) {
+        return (time_t)-1;
+    }
     return sb.st_mtime;
 }
+
+time_t getFileModDate(int fd) {
+    struct stat sb;
+    if (fstat(fd, &sb) < 0) {
+        return (time_t)-1;
+    }
+    if (sb.st_nlink <= 0) {
+        errno = ENOENT;
+        return (time_t)-1;
+    }
+    return sb.st_mtime;
+}
+
+#ifndef __linux__
+// No need to implement these on the host, the functions only matter on a device.
+bool isReadonlyFilesystem(const char*) {
+    return false;
+}
+bool isReadonlyFilesystem(int) {
+    return false;
+}
+#else   // __linux__
+bool isReadonlyFilesystem(const char* path) {
+    struct statfs sfs;
+    if (::statfs(path, &sfs)) {
+        PLOG(ERROR) << "isReadonlyFilesystem(): statfs(" << path << ") failed";
+        return false;
+    }
+    return (sfs.f_flags & ST_RDONLY) != 0;
+}
+
+bool isReadonlyFilesystem(int fd) {
+    struct statfs sfs;
+    if (::fstatfs(fd, &sfs)) {
+        PLOG(ERROR) << "isReadonlyFilesystem(): fstatfs(" << fd << ") failed";
+        return false;
+    }
+    return (sfs.f_flags & ST_RDONLY) != 0;
+}
+#endif  // __linux__
 
 }; // namespace android

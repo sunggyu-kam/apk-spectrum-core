@@ -9,26 +9,29 @@
 // Source sync
 # export SSL_CERT_FILE=./ca-bundle.crt
 
-mkdir aosp-platform-tools-33.0.3
-cd aosp-platform-tools-33.0.3
-repo init --depth=1 -u https://android.googlesource.com/platform/manifest -b platform-tools-33.0.3 -g all,-notdefault,tools 
+mkdir aosp-platform-tools-35.0.2
+cd aosp-platform-tools-35.0.2
+repo init --depth=1 -u https://android.googlesource.com/platform/manifest -b platform-tools-35.0.2 -g all,-notdefault,tools 
 repo sync -c -j8
 
 cd frameworks/base
 git remote add spectrum https://github.com/apk-spectrum/platform_frameworks_base.git
-git fetch --depth 10 spectrum spectrum-tools-33.0.3
-git checkout spectrum-tools-33.0.3
+git fetch --depth 10 spectrum spectrum-tools-35.0.2
+git checkout spectrum-tools-35.0.2
+export BUILD_NUMBER=`git rev-parse --abbrev-ref HEAD`-`git rev-parse --short=10 HEAD`-`date +%Y%m%d`
+cd ../..
 
 // Build
 . build/envsetup.sh
-lunch sdk-eng
-make -j10 sdk | tee build.log
-make -j10 win_sdk | tee build.log
-make -j10 winsdk-tools | tee build.log
+lunch sdk-aosp_current-user
 
+// SDK build
+# make -j10 sdk | tee build.log
+# make -j10 win_sdk | tee build.log
+# make -j10 winsdk-tools | tee build.log
 
 // Module build (mmm or mmma)
-mmm frameworks/base/tools/aapt/
+# mmm frameworks/base/tools/aapt/
 mmma frameworks/base/tools/aapt/
 
 
