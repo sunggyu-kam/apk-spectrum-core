@@ -6,6 +6,7 @@ import java.util.concurrent.Semaphore;
 import com.apkspectrum.data.apkinfo.ResourceInfo;
 import com.apkspectrum.logback.Log;
 import com.apkspectrum.resource._RFile;
+import com.apkspectrum.util.SystemUtil;
 
 public class AaptNativeScanner extends ApkScanner {
 
@@ -236,6 +237,9 @@ public class AaptNativeScanner extends ApkScanner {
 
     static {
         if ("64".equals(System.getProperty("sun.arch.data.model"))) {
+            if (SystemUtil.isMac()) {
+                System.load(_RFile.BIN_AAPT_LIBC64.getPath());
+            }
             System.load(_RFile.BIN_AAPT_LIB64.getPath());
         } else {
             System.load(_RFile.BIN_AAPT_LIB32.getPath());
