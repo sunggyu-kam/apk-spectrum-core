@@ -5,6 +5,7 @@ import java.util.concurrent.Semaphore;
 
 import com.apkspectrum.logback.Log;
 import com.apkspectrum.resource._RFile;
+import com.apkspectrum.util.SystemUtil;
 
 public class AaptNativeWrapper {
     static private final int SEM_COUNT = 10;
@@ -106,8 +107,15 @@ public class AaptNativeWrapper {
 
     private native static String[] run(String[] params);
 
+    public static void main(String[] args) {
+        run(new String[]{ "version" });
+    }
+
     static {
         if ("64".equals(System.getProperty("sun.arch.data.model"))) {
+            if (SystemUtil.isMac()) {
+                System.load(_RFile.BIN_AAPT_LIBC64.getPath());
+            }
             System.load(_RFile.BIN_AAPT_LIB64.getPath());
         } else {
             System.load(_RFile.BIN_AAPT_LIB32.getPath());
