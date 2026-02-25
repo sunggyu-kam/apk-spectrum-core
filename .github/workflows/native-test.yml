@@ -1,0 +1,21 @@
+name: AAPT LIBRARY LOADING TEST
+
+on:
+  push:
+    branches:
+      - native
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ macos-15-intel, macos-14, macos-15, macos-26, macos-latest,
+              ubuntu-22.04, ubuntu-24.04, ubuntu-latest,
+              windows-2022, windows-2025, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Build - Core
+        run: mvn test

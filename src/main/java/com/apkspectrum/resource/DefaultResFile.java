@@ -206,6 +206,9 @@ public class DefaultResFile implements ResFile<File> {
                 e.printStackTrace();
             }
         }
+        if (paths.size() == 1 && rootPath.endsWith(File.separator + "target")) {
+            paths.add(rootPath.substring(0, rootPath.length() - 7));
+        }
         return cachedModulePaths = paths.toArray(new String[paths.size()]);
     }
 }
