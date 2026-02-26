@@ -106,6 +106,10 @@ public class AaptNativeWrapper {
 
     private native static String[] run(String[] params);
 
+    public static void main(String[] args) {
+        run(new String[]{ "version" });
+    }
+
     static {
         if ("64".equals(System.getProperty("sun.arch.data.model"))) {
             System.load(_RFile.BIN_AAPT_LIB64.getPath());
