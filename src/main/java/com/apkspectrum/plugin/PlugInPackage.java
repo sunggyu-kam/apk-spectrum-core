@@ -29,7 +29,6 @@ import com.apkspectrum.plugin.manifest.StringData;
 import com.apkspectrum.resource._RStr;
 import com.apkspectrum.util.FileUtil;
 import com.apkspectrum.util.XmlPath;
-import com.google.common.collect.ObjectArrays;
 
 public class PlugInPackage {
     private Manifest manifest;
@@ -138,7 +137,10 @@ public class PlugInPackage {
 
     public PlugIn getPlugInByActionCommand(String actionCommand) {
         if (actionCommand == null || plugins == null) return null;
-        for (PlugIn p : ObjectArrays.concat(plugins, pluginGroups, PlugIn.class)) {
+        for (PlugIn p : plugins) {
+            if (actionCommand.equals(p.getActionCommand())) return p;
+        }
+        for (PlugIn p : pluginGroups) {
             if (actionCommand.equals(p.getActionCommand())) return p;
         }
         return null;
@@ -549,7 +551,13 @@ public class PlugInPackage {
             data.put("configuration", cfg);
         }
 
-        for (PlugIn p : ObjectArrays.concat(plugins, pluginGroups, PlugIn.class)) {
+        for (PlugIn p : plugins) {
+            Map<String, Object> prop = p.getChangedProperties();
+            if (!prop.isEmpty()) {
+                data.put(p.getActionCommand(), prop);
+            }
+        }
+        for (PlugIn p : pluginGroups) {
             Map<String, Object> prop = p.getChangedProperties();
             if (!prop.isEmpty()) {
                 data.put(p.getActionCommand(), prop);

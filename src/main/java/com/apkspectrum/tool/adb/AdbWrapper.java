@@ -1,7 +1,6 @@
 package com.apkspectrum.tool.adb;
 
 import java.io.File;
-import java.util.concurrent.TimeUnit;
 
 import com.android.ddmlib.AdbVersion;
 import com.apkspectrum.logback.Log;
@@ -10,11 +9,11 @@ import com.apkspectrum.resource._RProp;
 import com.apkspectrum.util.ConsolCmd;
 import com.apkspectrum.util.ConsolCmd.ConsoleOutputObserver;
 import com.apkspectrum.util.FileUtil;
-import com.google.common.util.concurrent.Uninterruptibles;
+import com.apkspectrum.util.Util;
 
 public class AdbWrapper {
     protected static String adbCmd = getAdbCmd();
-    private static String version;
+    private static AdbVersion version;
 
     private ConsoleOutputObserver listener;
     private String device;
@@ -49,7 +48,7 @@ public class AdbWrapper {
                         } ;
                         Log.d("waiting for running adb daemon only one. runProcess:"
                                 + runProcess.length + ", waitCnt:" + waitCnt);
-                        Uninterruptibles.sleepUninterruptibly(1, TimeUnit.SECONDS);
+                        Util.sleepWithoutExcpetion(1000);
                     }
                     runProcess = AdbServerMonitor.getRunningAdbPath();
                 } while (runProcess.length > 1);
@@ -93,18 +92,24 @@ public class AdbWrapper {
         adbCmd = adbPath;
     }
 
-    public String version() {
-        return version(listener);
+    public AdbVersion version() {
+        if (version != null) return version;
+        String adb = getAdbCmd();
+        if (adb == null) return null;
+        return version(new File(adb), listener);
     }
 
-    static public String version(ConsoleOutputObserver listener) {
-        if (version == null) {
-            String adb = getAdbCmd();
-            if (adb == null) return null;
-            String[] result = ConsolCmd.exec(new String[] {adb, "version"}, false, listener);
-            version = result[0];
+    static public AdbVersion version(File adb, ConsoleOutputObserver listener) {
+        if (adb == null) return AdbVersion.UNKNOWN;
+        String[] result = ConsolCmd.exec(new String[] {adb.getAbsolutePath(), "version"}, false, listener);
+        if (result == null) return AdbVersion.UNKNOWN;
+        for (String l: result) {
+            AdbVersion version = AdbVersion.parseFrom(l);
+            if (version != AdbVersion.UNKNOWN) {
+               return version;
+            }
         }
-        return version;
+        return AdbVersion.UNKNOWN;
     }
 
     public boolean startServer() {

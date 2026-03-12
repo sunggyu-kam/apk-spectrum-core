@@ -9,19 +9,15 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import com.android.ddmlib.AdbVersion;
-import com.android.ddmlib.AndroidDebugBridge;
 import com.apkspectrum.logback.Log;
 import com.apkspectrum.resource._RFile;
 import com.apkspectrum.util.FileUtil;
 import com.apkspectrum.util.SystemUtil;
-import com.google.common.util.concurrent.ListenableFuture;
 
 public class AdbVersionManager implements Comparator<String> {
 
@@ -59,22 +55,10 @@ public class AdbVersionManager implements Comparator<String> {
         }
 
         AdbVersion version = cached ? cacheMap.get(adbfile.getAbsolutePath()) : null;
-
         if (version == null) {
-            ListenableFuture<AdbVersion> future = AndroidDebugBridge.getAdbVersion(adbfile);
-
-            try {
-                version = future.get(5, TimeUnit.SECONDS);
-                if (cached && version != null) {
-                    addCacheMap(adbfile.getAbsolutePath(), version);
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (java.util.concurrent.TimeoutException e) {
-                String msg = "Unable to obtain result of 'adb version'";
-                Log.e(msg);
-            } catch (ExecutionException e) {
-                Log.e(e.getCause().getMessage());
+            version = AdbWrapper.version(adbfile, null);
+            if (version != null && version != AdbVersion.UNKNOWN) {
+                addCacheMap(adbfile.getAbsolutePath(), version);
             }
         }
 
