@@ -33,8 +33,8 @@ import com.apkspectrum.data.apkinfo.UsesPermissionSdk23Info;
 import com.apkspectrum.data.apkinfo.WidgetInfo;
 import com.apkspectrum.logback.Log;
 import com.apkspectrum.tool.aapt.AaptNativeWrapper;
+import com.apkspectrum.util.JarURI;
 import com.apkspectrum.util.SystemUtil;
-import com.apkspectrum.util.URITool;
 
 public class AaptManifestReader {
     private AaptXmlTreePath manifestPath;
@@ -403,12 +403,12 @@ public class AaptManifestReader {
                 widget.resourceMap.put(r.name + "/previewImage", resSet);
                 if (!previewIds.contains(resSet.getKey())) {
                     previewIds.add(resSet.getKey());
-                    String jarPath = "jar:" + new File(apkFilePath).toURI() + "!/";
+                    JarURI jarUri = new JarURI(apkFilePath);
                     for (ResourceInfo icon : resSet.getValue()) {
                         if (icon.name != null && !icon.name.isEmpty()) {
                             if (icon.name.startsWith("@")) continue;
                             icon = icon.clone();
-                            icon.name = jarPath + URITool.encodeURI(icon.name);
+                            icon.name = jarUri.toString(icon.name);
                             iconResList.add(icon);
                         }
                     }
@@ -475,10 +475,10 @@ public class AaptManifestReader {
                     for (int j = 0; j < widget.icons.length; j++)
                         widget.icons[j] = widget.icons[j].clone();
                     widget.resourceMap.put(widget.mapId + "icon", resSet);
-                    String jarPath = "jar:" + new File(apkFilePath).toURI() + "!/";
+                    JarURI jarUri = new JarURI(apkFilePath);
                     for (ResourceInfo icon : widget.icons) {
                         if (icon.name != null && !icon.name.isEmpty()) {
-                            icon.name = jarPath + URITool.encodeURI(icon.name);
+                            icon.name = jarUri.toString(icon.name);
                         }
                     }
                 }

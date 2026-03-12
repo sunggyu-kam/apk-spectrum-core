@@ -40,6 +40,6 @@ public class ResourceInfo implements Cloneable {
 
     @Override
     public String toString() {
-        return "ResourceInfo[name=\"" + name + "\", configuration=\"" + configuration + "]";
+        return "ResourceInfo[name=\"" + name + "\", configuration=\"" + configuration + "\"]";
     }
 }

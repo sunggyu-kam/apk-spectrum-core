@@ -12,8 +12,8 @@ import com.apkspectrum.data.apkinfo.ResourceInfo;
 import com.apkspectrum.logback.Log;
 import com.apkspectrum.tool.aapt.AaptNativeWrapper;
 import com.apkspectrum.util.FileUtil;
+import com.apkspectrum.util.JarURI;
 import com.apkspectrum.util.Launcher;
-import com.apkspectrum.util.URITool;
 import com.apkspectrum.util.ZipFileUtil;
 
 public class AaptScanner extends ApkScanner {
@@ -222,7 +222,7 @@ public class AaptScanner extends ApkScanner {
     protected ResourceInfo[] changeURLpath(ResourceInfo[] icons,
             AaptManifestReader manifestReader) {
         if (icons != null && icons.length > 0) {
-            String jarPath = "jar:" + new File(apkInfo.filePath).toURI() + "!/";
+            JarURI jarUri = new JarURI(apkInfo.filePath);
             for (ResourceInfo r : icons) {
                 if (r.name == null) continue;
 
@@ -241,12 +241,12 @@ public class AaptScanner extends ApkScanner {
                             icons = new ResourceInfo[] {new ResourceInfo()};
                         } else {
                             for (ResourceInfo r2 : icons) {
-                                r2.name = jarPath + URITool.encodeURI(r2.name);
+                                r2.name = jarUri.toString(r2.name);
                             }
                         }
                     }
                 } else {
-                    r.name = jarPath + URITool.encodeURI(r.name);
+                    r.name = jarUri.toString(r.name);
                 }
             }
         } else {
