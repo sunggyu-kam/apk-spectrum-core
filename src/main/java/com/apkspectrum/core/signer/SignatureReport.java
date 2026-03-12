@@ -30,10 +30,12 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import com.apkspectrum.logback.Log;
 import com.apkspectrum.resource._RStr;
 import com.apkspectrum.util.Base64;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class SignatureReport {
 
     private static final String BEGIN_CERT = "-----BEGIN CERTIFICATE-----";
@@ -42,6 +44,8 @@ public class SignatureReport {
     public static final String SIGNATURE_SCHEME_V1 = "v1";
     public static final String SIGNATURE_SCHEME_V2 = "v2";
     public static final String SIGNATURE_SCHEME_V3 = "v3";
+    public static final String SIGNATURE_SCHEME_V31 = "v3.1";
+    public static final String SIGNATURE_SCHEME_V4 = "v4";
 
     protected X509Certificate[] certificates;
     protected X509Certificate[] timestamp;
@@ -160,7 +164,7 @@ public class SignatureReport {
         }
         jf.close();
         if (ss.isEmpty() && certificates == null) {
-            Log.w(_RStr.NOT_A_SINGED_JAR_FILE.get());
+            log.warn(_RStr.NOT_A_SINGED_JAR_FILE.get());
         }
         if (!certs.isEmpty()) {
             certificates = certs.toArray(new X509Certificate[certs.size()]);
@@ -409,7 +413,6 @@ public class SignatureReport {
 
     public String getReport(X509Certificate cert) {
         if (cert == null) return "Unknown certificate format";
-        Log.v(Integer.toHexString(cert.hashCode()));
 
         ByteArrayOutputStream bufferStream = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(bufferStream);
@@ -417,6 +420,7 @@ public class SignatureReport {
             printX509Cert(cert, ps);
             if (signScheme != null) {
                 ps.println("\n* APK Signature Scheme " + signScheme);
+                ps.println("* PackageSignatures : " + Integer.toHexString(cert.hashCode()));
             }
             ps.println();
             if (rfc) {
