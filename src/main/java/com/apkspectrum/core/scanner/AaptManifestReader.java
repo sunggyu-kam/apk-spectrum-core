@@ -33,7 +33,6 @@ import com.apkspectrum.data.apkinfo.UsesPermissionSdk23Info;
 import com.apkspectrum.data.apkinfo.WidgetInfo;
 import com.apkspectrum.logback.Log;
 import com.apkspectrum.tool.aapt.AaptNativeWrapper;
-import com.apkspectrum.util.JarURI;
 import com.apkspectrum.util.SystemUtil;
 
 public class AaptManifestReader {
@@ -403,12 +402,10 @@ public class AaptManifestReader {
                 widget.resourceMap.put(r.name + "/previewImage", resSet);
                 if (!previewIds.contains(resSet.getKey())) {
                     previewIds.add(resSet.getKey());
-                    JarURI jarUri = new JarURI(apkFilePath);
                     for (ResourceInfo icon : resSet.getValue()) {
                         if (icon.name != null && !icon.name.isEmpty()) {
                             if (icon.name.startsWith("@")) continue;
                             icon = icon.clone();
-                            icon.name = jarUri.toString(icon.name);
                             iconResList.add(icon);
                         }
                     }
@@ -416,8 +413,9 @@ public class AaptManifestReader {
             }
         }
 
-        if (iconResList.size() > 0)
+        if (iconResList.size() > 0) {
             widget.icons = iconResList.toArray(new ResourceInfo[iconResList.size()]);
+        }
 
         widget.size = widgetSize != null ? widgetSize : "Unknown";
     }
@@ -475,12 +473,6 @@ public class AaptManifestReader {
                     for (int j = 0; j < widget.icons.length; j++)
                         widget.icons[j] = widget.icons[j].clone();
                     widget.resourceMap.put(widget.mapId + "icon", resSet);
-                    JarURI jarUri = new JarURI(apkFilePath);
-                    for (ResourceInfo icon : widget.icons) {
-                        if (icon.name != null && !icon.name.isEmpty()) {
-                            icon.name = jarUri.toString(icon.name);
-                        }
-                    }
                 }
                 if (widget.icons == null) widget.icons = manifestInfo.application.icons;
 

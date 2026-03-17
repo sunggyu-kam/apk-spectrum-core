@@ -28,6 +28,7 @@ import com.apkspectrum.plugin.manifest.Resources;
 import com.apkspectrum.plugin.manifest.StringData;
 import com.apkspectrum.resource._RStr;
 import com.apkspectrum.util.FileUtil;
+import com.apkspectrum.util.JarURI;
 import com.apkspectrum.util.XmlPath;
 
 public class PlugInPackage {
@@ -260,7 +261,7 @@ public class PlugInPackage {
         boolean isJarPackage = isJarPackage(pluginFile.toURI());
         if (isJarPackage) {
             try {
-                URL classURL = new URL("jar:" + pluginFile.toURI() + "!/");
+                URL classURL = new JarURI(pluginFile).toURL();
                 loader = new URLClassLoader(new URL[] {classURL});
             } catch (MalformedURLException e) {
                 Log.e(e.getMessage());
@@ -466,9 +467,7 @@ public class PlugInPackage {
                 }
             } else {
                 if (isJarPackage(pluginUri)) {
-                    String temp = uri.toString();
-                    uri = new URI("jar:" + pluginUri + "!/"
-                            + (temp.startsWith("/") ? temp.substring(1) : uri));
+                    uri = JarURI.toURI(pluginUri.getPath(), uri);
                 } else {
                     uri = pluginUri.resolve(uri);
                 }

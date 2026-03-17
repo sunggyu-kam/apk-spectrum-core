@@ -6,6 +6,7 @@ import java.util.concurrent.Semaphore;
 import com.apkspectrum.data.apkinfo.ResourceInfo;
 import com.apkspectrum.logback.Log;
 import com.apkspectrum.resource._RFile;
+import com.apkspectrum.util.JarURI;
 
 public class AaptNativeScanner extends ApkScanner {
 
@@ -58,7 +59,7 @@ public class AaptNativeScanner extends ApkScanner {
                         + "so, set package of the default resources.");
                 String selfPath = _RFile.RAW_ANDROID_RESOURCES.getPath();
                 if (selfPath.startsWith("jar:")) {
-                    selfPath = selfPath.replaceAll("jar:file:(.*)!/resources.arsc", "$1");
+                    selfPath = JarURI.create(selfPath).getJarPath();
                 } else {
                     selfPath = _RFile.RAW_ROOT_PATH.getURL().getPath();
                 }

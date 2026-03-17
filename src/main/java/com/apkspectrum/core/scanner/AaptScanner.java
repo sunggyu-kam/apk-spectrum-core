@@ -12,7 +12,6 @@ import com.apkspectrum.data.apkinfo.ResourceInfo;
 import com.apkspectrum.logback.Log;
 import com.apkspectrum.tool.aapt.AaptNativeWrapper;
 import com.apkspectrum.util.FileUtil;
-import com.apkspectrum.util.JarURI;
 import com.apkspectrum.util.Launcher;
 import com.apkspectrum.util.ZipFileUtil;
 
@@ -134,7 +133,7 @@ public class AaptScanner extends ApkScanner {
         Log.i("read permissions completed");
 
         apkInfo.manifest.application.icons =
-                changeURLpath(apkInfo.manifest.application.icons, manifestReader);
+                filterDrawableIcon(apkInfo.manifest.application.icons, manifestReader);
 
         readApexInfo();
 
@@ -219,10 +218,9 @@ public class AaptScanner extends ApkScanner {
         stateChanged(STATUS_WIDGET_COMPLETED);
     }
 
-    protected ResourceInfo[] changeURLpath(ResourceInfo[] icons,
+    protected ResourceInfo[] filterDrawableIcon(ResourceInfo[] icons,
             AaptManifestReader manifestReader) {
         if (icons != null && icons.length > 0) {
-            JarURI jarUri = new JarURI(apkInfo.filePath);
             for (ResourceInfo r : icons) {
                 if (r.name == null) continue;
 
@@ -239,14 +237,8 @@ public class AaptScanner extends ApkScanner {
                                 iconXmlPath.getAndroidNamespaceTag());
                         if (icons == null || icons.length == 0) {
                             icons = new ResourceInfo[] {new ResourceInfo()};
-                        } else {
-                            for (ResourceInfo r2 : icons) {
-                                r2.name = jarUri.toString(r2.name);
-                            }
                         }
                     }
-                } else {
-                    r.name = jarUri.toString(r.name);
                 }
             }
         } else {
