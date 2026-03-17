@@ -11,10 +11,10 @@ public class JarURI {
     private static final URI ROOT = URI.create("");
     private static final boolean IS_WINDOWS = SystemUtil.isWindows() || System.getProperty("test") != null;
 
-    private final File jarFile;
+    private final String jarPath;
     private final String jarUri;
     private final URI entry;
-    private final URI rawEntry;
+    private final String rawEntry;
 
     public JarURI(@NonNull String jarFilePath) {
         this(new File(jarFilePath));
@@ -37,14 +37,15 @@ public class JarURI {
     }
 
     public JarURI(@NonNull File jarFile, URI entryUri) {
-        this(jarFile, "jar:" + jarFile.toURI() + "!/", entryUri);
+        this(jarFile.getPath(), "jar:" + jarFile.toURI() + "!/", entryUri);
     }
 
-    private JarURI(File jarFile, String jarUri, URI entryUri) {
-        this.jarFile = jarFile;
+    private JarURI(String jarPath, String jarUri, URI entryUri) {
+        this.jarPath = jarPath;
         this.jarUri = jarUri;
-        this.rawEntry = entryUri;
         this.entry = getEntry(entryUri);
+        this.rawEntry = entryUri != null && !this.entry.equals(entryUri)
+                      ? entryUri.toString() : null;
     }
 
     public static JarURI create(@NonNull String src) {
@@ -93,23 +94,23 @@ public class JarURI {
     }
 
     public JarURI resolve(URI entryUri) {
-        return entryUri != null ? new JarURI(jarFile, jarUri, getEntry().resolve(entryUri)) : this;
+        return entryUri != null ? new JarURI(jarPath, jarUri, getEntry().resolve(entryUri)) : this;
     }
 
     public File getJarFile() {
-        return jarFile;
+        return new File(getJarPath());
     }
 
     public String getJarPath() {
-        return jarFile.getPath();
+        return jarPath;
     }
 
     public String getJarAbsolutePath() {
-        return jarFile.getAbsolutePath();
+        return getJarFile().getAbsolutePath();
     }
 
     public URI getRawEntry() {
-        return rawEntry;
+        return rawEntry != null ? URI.create(rawEntry) : null;
     }
 
     public String getEntryName() {

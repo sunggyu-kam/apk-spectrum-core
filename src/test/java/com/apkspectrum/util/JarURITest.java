@@ -286,10 +286,12 @@ class JarURITest {
         String entryPath1 = "META-INF/../MANIFEST.MF";
         String entryPath2 = "/META-INF/../MANIFEST.MF";
         String entryPath3 = "./META-INF/../MANIFEST.MF";
+        String entryPath4 = "META-INF/MANIFEST.MF";
         JarURI jarURI0 = new JarURI(jarFile, entryPath0);
         JarURI jarURI1 = new JarURI(jarFile, entryPath1);
         JarURI jarURI2 = new JarURI(jarFile, entryPath2);
         JarURI jarURI3 = new JarURI(jarFile, entryPath3);
+        JarURI jarURI4 = new JarURI(jarFile, entryPath4);
 
         URI expected0 = URI.create(entryPath0);
         URI expected1 = URI.create(entryPath1);
@@ -300,6 +302,7 @@ class JarURITest {
         assertEquals(expected1, jarURI1.getRawEntry());
         assertEquals(expected2, jarURI2.getRawEntry());
         assertEquals(expected3, jarURI3.getRawEntry());
+        assertNull(jarURI4.getRawEntry());
     }
 
     @Test

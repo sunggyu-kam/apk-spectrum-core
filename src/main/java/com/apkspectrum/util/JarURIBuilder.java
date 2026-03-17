@@ -49,7 +49,7 @@ public class JarURIBuilder {
                 throw new IllegalArgumentException("entry is not specified");
             }
             if (symbolicPath.lastIndexOf("#") > 0) {
-                throw new IllegalArgumentException("null");
+                throw new IllegalArgumentException("invalid symbolic path");
             }
             if (!symbolicPath.startsWith("#")) {
                 symbolicPath = "#" + symbolicPath;
