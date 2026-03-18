@@ -86,7 +86,7 @@ public class UpdateCheckerLinker extends AbstractUpdateChecker {
                 BufferedReader br = new BufferedReader(isr)) {
 
             String buffer = null;
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             boolean flag = false;
             while ((buffer = br.readLine()) != null) {
                 sb.append(flag ? "\n" : "").append(buffer);

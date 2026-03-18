@@ -10,19 +10,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import com.apkspectrum.logback.Log;
 import com.apkspectrum.resource._RStr;
 
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class FileUtil {
-    public static byte[] readData(String filePath) {
-        if (filePath == null) return null;
+    public static byte[] readData(@NonNull String filePath) {
         byte[] buffer = null;
         try (InputStream is = new FileInputStream(filePath);
                 ByteArrayOutputStream os = new ByteArrayOutputStream()) {
@@ -58,7 +58,7 @@ public class FileUtil {
         List<String> tempList = new ArrayList<>();
         File[] list = f.listFiles();
         if (list == null) {
-            Log.i("findFiles() list is null : " + f.toString());
+            log.info("findFiles() list is null : " + f.toString());
             return tempList;
         }
         for (int i = 0; i < list.length; i++) {
@@ -237,49 +237,41 @@ public class FileUtil {
     }
 
     public static String getSuffix(String path) {
-        return path.replaceAll("(.*/)?(.*(\\.\\w+)|.*)+", "$3").toLowerCase();
+        int sep = path.lastIndexOf("/");
+        int dot = path.lastIndexOf(".");
+        return sep < dot ? path.substring(dot) : "";
     }
 
-    /**
-     * Converts a byte to hex digit and writes to the supplied buffer
-     */
-    private static void byte2hex(byte b, StringBuffer buf) {
-        char[] hexChars =
-                {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
-        int high = ((b & 0xf0) >> 4);
-        int low = (b & 0x0f);
-        buf.append(hexChars[high]);
-        buf.append(hexChars[low]);
-    }
-
-    /**
-     * Converts a byte array to hex string
-     */
-    private static String toHexString(byte[] block) {
-        StringBuffer buf = new StringBuffer();
-        int len = block.length;
-        for (int i = 0; i < len; i++) {
-            byte2hex(block[i], buf);
-            if (i < len - 1) {
-                buf.append(":");
-            }
-        }
-        return buf.toString();
-    }
-
-    public static String getMessageDigest(final File file, final String algorithm) {
-        if (!file.canRead()) {
-            Log.i("This file cannot be read. {}", file.getAbsolutePath());
-            return "This file cannot be read.";
-        }
+    public static String getMessageDigest(@NonNull File file, @NonNull String algorithm) {
         try {
-            MessageDigest messageDigest = MessageDigest.getInstance(algorithm);
-            messageDigest.update(Files.readAllBytes(file.toPath()));
-            byte[] hash = messageDigest.digest();
-            return toHexString(hash);
-        } catch (IOException | NoSuchAlgorithmException e) {
-            Log.e("{} {}", e.getMessage(), e);
-            return "Unable to calculate checksum by " + algorithm;
+            byte[] data = Files.readAllBytes(file.toPath());
+            data = Util.getMessageDigest(data, algorithm);
+            return Util.toHexString(data, ':', true);
+        } catch (IOException e) {
+            throw new IllegalArgumentException(
+                    file.getAbsolutePath() + " is not exist or can't read.", e);
+        }
+    }
+
+    public static String getMessageDigestByLargeFile(@NonNull File file, @NonNull String algorithm) {
+        try (final InputStream is = new FileInputStream(file)) {
+            byte[] hash = Util.getMessageDigest(() -> {
+                try {
+                    byte[] data = new byte[1024];
+                    int nRead = is.read(data, 0, data.length);
+                    if (nRead != -1) {
+                        return Arrays.copyOf(data, nRead);
+                    }
+                    return null;
+                } catch (IOException e) {
+                    throw new IllegalArgumentException(
+                            file.getAbsolutePath() + " is not exist or can't read.", e);
+                }
+            }, algorithm);
+            return Util.toHexString(hash, ':', true);
+        } catch (IOException e) {
+            throw new IllegalArgumentException(
+                    file.getAbsolutePath() + " is not exist or can't read.", e);
         }
     }
 }

@@ -594,7 +594,7 @@ public class PermissionRecorder {
                 InputStreamReader isr = new InputStreamReader(is, "UTF-8");
                 BufferedReader br = new BufferedReader(isr)) {
             String buffer = null;
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             while ((buffer = br.readLine()) != null) {
                 sb.append(buffer);
             }
