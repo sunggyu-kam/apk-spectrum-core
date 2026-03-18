@@ -1,8 +1,10 @@
 package com.apkspectrum.data.apkinfo;
 
+import java.util.Objects;
+
 public class ResourceInfo implements Cloneable {
-    public String name;
-    public String configuration;
+    public final String name;
+    public final String configuration;
 
     public ResourceInfo() {
         this(null, null);
@@ -17,15 +19,21 @@ public class ResourceInfo implements Cloneable {
         this.configuration = configuration;
     }
 
+    public boolean hasName() {
+        return name != null && !name.isEmpty();
+    }
+
+    public boolean hasConfiguration() {
+        return configuration != null && !configuration.isEmpty()
+                && !configuration.equals("default");
+    }
+
     @Override
     public boolean equals(Object target) {
         if (!(target instanceof ResourceInfo)) return false;
         ResourceInfo other = (ResourceInfo) target;
-        return objEquals(name, other.name) && objEquals(configuration, other.configuration);
-    }
-
-    protected boolean objEquals(Object a, Object b) {
-        return ((a == null && b == null) || (a != null && a.equals(b)));
+        return Objects.equals(name, other.name)
+                && Objects.equals(configuration, other.configuration);
     }
 
     @Override
