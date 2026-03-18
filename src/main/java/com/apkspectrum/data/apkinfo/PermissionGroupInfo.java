@@ -1,6 +1,7 @@
 package com.apkspectrum.data.apkinfo;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 import com.apkspectrum.resource._RStr;
 
@@ -25,14 +26,10 @@ public class PermissionGroupInfo {
     public boolean equals(Object target) {
         if (!(target instanceof PermissionGroupInfo)) return false;
         PermissionGroupInfo other = (PermissionGroupInfo) target;
-        return objEquals(name, other.name) && Arrays.deepEquals(labels, other.labels)
+        return Objects.equals(name, other.name) && Arrays.deepEquals(labels, other.labels)
                 && Arrays.deepEquals(descriptions, other.descriptions)
                 && Arrays.deepEquals(requests, other.requests)
                 && Arrays.deepEquals(icons, other.icons);
-    }
-
-    protected boolean objEquals(Object a, Object b) {
-        return ((a == null && b == null) || (a != null && a.equals(b)));
     }
 
     public String getLabel() {

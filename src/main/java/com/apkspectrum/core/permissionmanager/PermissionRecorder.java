@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Objects;
 
 import javax.xml.xpath.XPathException;
 
@@ -377,29 +378,29 @@ public class PermissionRecorder {
             }
             if (!lowerInfo.equals(higherInfo)) {
                 node = node.createXPath("patch[@sdk='" + lowerInfo.sdk + "']");
-                if (!objEquals(lowerInfo.comment, higherInfo.comment)) {
+                if (!Objects.equals(lowerInfo.comment, higherInfo.comment)) {
                     node.setComment(lowerInfo.comment);
                 }
-                if (!objEquals(lowerInfo.permissionGroup, higherInfo.permissionGroup)) {
+                if (!Objects.equals(lowerInfo.permissionGroup, higherInfo.permissionGroup)) {
                     node.setAttribute("permissionGroup", lowerInfo.permissionGroup);
                 }
-                if (!objEquals(lowerInfo.protectionLevel, higherInfo.protectionLevel)) {
+                if (!Objects.equals(lowerInfo.protectionLevel, higherInfo.protectionLevel)) {
                     node.setAttribute("protectionLevel", lowerInfo.protectionLevel);
                 }
-                if (!objEquals(lowerInfo.permissionFlags, higherInfo.permissionFlags)) {
+                if (!Objects.equals(lowerInfo.permissionFlags, higherInfo.permissionFlags)) {
                     node.setAttribute("permissionFlags", lowerInfo.permissionFlags);
                 }
-                if (!objEquals(lowerInfo.label, higherInfo.label)
+                if (!Objects.equals(lowerInfo.label, higherInfo.label)
                         || !Arrays.deepEquals(lowerInfo.labels, higherInfo.labels)) {
                     node.setAttribute("label", lowerInfo.label);
                     recordResource(lowerInfo.label, lowerInfo.labels, lowerInfo.sdk);
                 }
-                if (!objEquals(lowerInfo.description, higherInfo.description)
+                if (!Objects.equals(lowerInfo.description, higherInfo.description)
                         || !Arrays.deepEquals(lowerInfo.descriptions, higherInfo.descriptions)) {
                     node.setAttribute("description", lowerInfo.description);
                     recordResource(lowerInfo.description, lowerInfo.descriptions, lowerInfo.sdk);
                 }
-                if (!objEquals(lowerInfo.icon, higherInfo.icon)
+                if (!Objects.equals(lowerInfo.icon, higherInfo.icon)
                         || !Arrays.deepEquals(lowerInfo.icons, higherInfo.icons)) {
                     node.setAttribute("icon", lowerInfo.icon);
                 }
@@ -436,29 +437,29 @@ public class PermissionRecorder {
             }
             if (!lowerInfo.equals(higherInfo)) {
                 node = node.createXPath("patch[@sdk='" + lowerInfo.sdk + "']");
-                if (!objEquals(lowerInfo.comment, higherInfo.comment)) {
+                if (!Objects.equals(lowerInfo.comment, higherInfo.comment)) {
                     node.setComment(lowerInfo.comment);
                 }
-                if (!objEquals(lowerInfo.label, higherInfo.label)
+                if (!Objects.equals(lowerInfo.label, higherInfo.label)
                         || !Arrays.deepEquals(lowerInfo.labels, higherInfo.labels)) {
                     node.setAttribute("label", lowerInfo.label);
                     recordResource(lowerInfo.label, lowerInfo.labels, lowerInfo.sdk);
                 }
-                if (!objEquals(lowerInfo.description, higherInfo.description)
+                if (!Objects.equals(lowerInfo.description, higherInfo.description)
                         || !Arrays.deepEquals(lowerInfo.descriptions, higherInfo.descriptions)) {
                     node.setAttribute("description", lowerInfo.description);
                     recordResource(lowerInfo.description, lowerInfo.descriptions, lowerInfo.sdk);
                 }
-                if (!objEquals(lowerInfo.request, higherInfo.request)
+                if (!Objects.equals(lowerInfo.request, higherInfo.request)
                         || !Arrays.deepEquals(lowerInfo.requests, higherInfo.requests)) {
                     node.setAttribute("request", lowerInfo.request);
                     recordResource(lowerInfo.request, lowerInfo.requests, lowerInfo.sdk);
                 }
-                if (!objEquals(lowerInfo.priority, higherInfo.priority)) {
+                if (!Objects.equals(lowerInfo.priority, higherInfo.priority)) {
                     node.setAttribute("priority",
                             lowerInfo.priority != null ? lowerInfo.priority.toString() : null);
                 }
-                if (!objEquals(lowerInfo.icon, higherInfo.icon)
+                if (!Objects.equals(lowerInfo.icon, higherInfo.icon)
                         || !Arrays.deepEquals(lowerInfo.icons, higherInfo.icons)) {
                     node.setAttribute("icon", lowerInfo.icon);
                 }
@@ -543,10 +544,6 @@ public class PermissionRecorder {
             }
         }
         return res;
-    }
-
-    protected boolean objEquals(Object a, Object b) {
-        return ((a == null && b == null) || (a != null && a.equals(b)));
     }
 
     public String getSource(String url) throws NetworkException {

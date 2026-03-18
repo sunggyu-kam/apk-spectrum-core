@@ -1,5 +1,7 @@
 package com.apkspectrum.core.permissionmanager;
 
+import java.util.Objects;
+
 import com.apkspectrum.data.apkinfo.ApkInfoHelper;
 import com.apkspectrum.data.apkinfo.PermissionInfo;
 import com.apkspectrum.data.apkinfo.ResourceInfo;
@@ -37,8 +39,11 @@ public class PermissionInfoExt extends PermissionInfo implements UnitInformation
     public boolean equals(Object target) {
         if (!(target instanceof PermissionInfoExt)) return false;
         PermissionInfoExt other = (PermissionInfoExt) target;
-        return super.equals(target) && objEquals(label, other.label) && objEquals(icon, other.icon)
-                && objEquals(description, other.description) && objEquals(comment, other.comment);
+        return super.equals(target)
+                && Objects.equals(label, other.label)
+                && Objects.equals(icon, other.icon)
+                && Objects.equals(description, other.description)
+                && Objects.equals(comment, other.comment);
     }
 
     @Override

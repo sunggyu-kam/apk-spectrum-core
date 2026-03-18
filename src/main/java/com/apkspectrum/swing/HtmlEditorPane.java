@@ -10,6 +10,7 @@ import java.util.EventObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.swing.JEditorPane;
 import javax.swing.KeyStroke;
@@ -116,7 +117,7 @@ public class HtmlEditorPane extends JEditorPane implements HyperlinkListener {
         if (head != null && head.trim().isEmpty()) {
             head = null;
         }
-        if (objEquals(this.head, head) && objEquals(this.body, body)) {
+        if (Objects.equals(this.head, head) && Objects.equals(this.body, body)) {
             Log.v("same content to pre");
             return;
         }
@@ -364,10 +365,6 @@ public class HtmlEditorPane extends JEditorPane implements HyperlinkListener {
             }
         }
         return makeHyperLink(href, text, title, id, style);
-    }
-
-    private boolean objEquals(Object a, Object b) {
-        return ((a == null && b == null) || (a != null && a.equals(b)));
     }
 
     // refer to

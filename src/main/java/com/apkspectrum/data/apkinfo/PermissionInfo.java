@@ -1,6 +1,7 @@
 package com.apkspectrum.data.apkinfo;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 import com.apkspectrum.resource._RProp;
 
@@ -83,16 +84,13 @@ public class PermissionInfo {
     public boolean equals(Object target) {
         if (!(target instanceof PermissionInfo)) return false;
         PermissionInfo other = (PermissionInfo) target;
-        return objEquals(name, other.name) && objEquals(permissionGroup, other.permissionGroup)
-                && objEquals(protectionLevel, other.protectionLevel)
-                && objEquals(permissionFlags, other.permissionFlags)
+        return Objects.equals(name, other.name)
+                && Objects.equals(permissionGroup, other.permissionGroup)
+                && Objects.equals(protectionLevel, other.protectionLevel)
+                && Objects.equals(permissionFlags, other.permissionFlags)
                 && Arrays.deepEquals(labels, other.labels)
                 && Arrays.deepEquals(descriptions, other.descriptions)
                 && Arrays.deepEquals(icons, other.icons);
-    }
-
-    protected boolean objEquals(Object a, Object b) {
-        return ((a == null && b == null) || (a != null && a.equals(b)));
     }
 
     public boolean isDangerousLevel() {

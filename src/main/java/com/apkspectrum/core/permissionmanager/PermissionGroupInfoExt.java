@@ -1,6 +1,7 @@
 package com.apkspectrum.core.permissionmanager;
 
 import java.util.List;
+import java.util.Objects;
 
 import com.apkspectrum.data.apkinfo.ApkInfoHelper;
 import com.apkspectrum.data.apkinfo.PermissionGroupInfo;
@@ -47,9 +48,13 @@ public class PermissionGroupInfoExt extends PermissionGroupInfo implements UnitI
             return false;
         }
         PermissionGroupInfoExt other = (PermissionGroupInfoExt) target;
-        return super.equals(target) && objEquals(label, other.label) && objEquals(icon, other.icon)
-                && objEquals(description, other.description) && objEquals(request, other.request)
-                && objEquals(priority, other.priority) && objEquals(comment, other.comment);
+        return super.equals(target)
+                && Objects.equals(label, other.label)
+                && Objects.equals(icon, other.icon)
+                && Objects.equals(description, other.description)
+                && Objects.equals(request, other.request)
+                && Objects.equals(priority, other.priority)
+                && Objects.equals(comment, other.comment);
     }
 
     public boolean isDeprecated() {
