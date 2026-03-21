@@ -184,6 +184,11 @@ public class DefaultResFile implements ResFile<File> {
         paths.add(rootPath);
 
         File gitmodules = new File(rootPath + File.separator + ".gitmodules");
+        String modulesPath = rootPath;
+        if (!gitmodules.exists() && modulesPath.endsWith(File.separator + "target")) {
+            modulesPath = rootPath.substring(0, rootPath.length() - 6);
+            gitmodules = new File(modulesPath + ".gitmodules");
+        }
         if (gitmodules.exists() && gitmodules.canRead()) {
             // https://stackoverflow.com/questions/190629/what-is-the-easiest-way-to-parse-an-ini-file-in-java
             Pattern _section = Pattern.compile("\\s*\\[([^]]*)\\]\\s*");
@@ -202,8 +207,8 @@ public class DefaultResFile implements ResFile<File> {
                             String key = m.group(1).trim();
                             String value = m.group(2).trim();
                             if ("path".equals(key)) {
-                                Log.v("found a module : " + section + ", path : " + value);
-                                paths.add(rootPath + File.separator + value);
+                                // Log.v("module : {}, path : {}{}", section, modulesPath, value);
+                                paths.add(0, modulesPath + value);
                             }
                         }
                     }
