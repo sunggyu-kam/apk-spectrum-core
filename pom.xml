@@ -122,6 +122,10 @@
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+    </dependency>
   </dependencies>
   <dependencyManagement>
     <dependencies>
@@ -188,11 +192,16 @@
       </dependency>
       <!-- for JUnit -->
       <dependency>
-        <groupId>org.junit</groupId>
-        <artifactId>junit-bom</artifactId>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-engine</artifactId>
         <version>${junit-jupiter.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-params</artifactId>
+        <version>${junit-jupiter.version}</version>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.mockito</groupId>
@@ -234,6 +243,7 @@
             <configuration>
               <outputDirectory>${project.build.directory}/lib</outputDirectory>
               <overWriteIfNewer>true</overWriteIfNewer>
+              <includeScope>runtime</includeScope>
             </configuration>
           </plugin>
           <plugin>
