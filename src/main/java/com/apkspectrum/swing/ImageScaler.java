@@ -41,11 +41,13 @@ public class ImageScaler {
     }
 
     public static ImageIcon getScaledImageIcon(ImageIcon source, int w, int h) {
-        return new ImageIcon(getScaledImage(source.getImage(), w, h, true));
+        return new ImageIcon(getScaledImage(source.getImage(), w, h, true),
+                source.getDescription());
     }
 
     public static ImageIcon getScaledImageIcon(ImageIcon source, int w, int h, boolean flush) {
-        return new ImageIcon(getScaledImage(source.getImage(), w, h, flush));
+        return new ImageIcon(getScaledImage(source.getImage(), w, h, flush),
+                source.getDescription());
     }
 
     public static Image getMaintainAspectRatioImage(ImageIcon source, int Maxw, int Maxh) {
@@ -94,12 +96,14 @@ public class ImageScaler {
     }
 
     public static ImageIcon getMaintainAspectRatioImageIcon(ImageIcon source, int Maxw, int Maxh) {
-        return new ImageIcon(getMaintainAspectRatioImage(source.getImage(), Maxw, Maxh, true));
+        return new ImageIcon(getMaintainAspectRatioImage(source.getImage(), Maxw, Maxh, true),
+                source.getDescription());
     }
 
     public static ImageIcon getMaintainAspectRatioImageIcon(ImageIcon source, int Maxw, int Maxh,
             boolean flush) {
-        return new ImageIcon(getMaintainAspectRatioImage(source.getImage(), Maxw, Maxh, flush));
+        return new ImageIcon(getMaintainAspectRatioImage(source.getImage(), Maxw, Maxh, flush),
+                source.getDescription());
     }
 
     @Deprecated
