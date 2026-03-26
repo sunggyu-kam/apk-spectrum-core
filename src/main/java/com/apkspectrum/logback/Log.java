@@ -1,6 +1,5 @@
 package com.apkspectrum.logback;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -9,6 +8,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import org.slf4j.LoggerFactory;
+
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
@@ -94,37 +94,41 @@ public class Log {
     }
 
     static public void setLevel(Level level) {
-        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
-        Logger logger = context.getLogger(("ROOT"));
-        if (logger != null) {
-            logger.setLevel(level);
+        LoggerContext c = (LoggerContext) LoggerFactory.getILoggerFactory();
+        for (Logger logger : c.getLoggerList()) {
+            if (logger.iteratorForAppenders().hasNext()) {
+                logger.setLevel(level);
+            }
         }
     }
 
     static public void enableConsoleLog(boolean enable) {
-        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
-        Logger logger = context.getLogger(("ROOT"));
-        Appender<ILoggingEvent> appender = logger.getAppender("CONSOLE");
-        if (appender == null) return;
-        if (appender.isStarted() != enable) {
-            if (enable) {
-                appender.start();
-            } else {
-                appender.stop();
+        LoggerContext c = (LoggerContext) LoggerFactory.getILoggerFactory();
+        for (Logger logger : c.getLoggerList()) {
+            Appender<ILoggingEvent> appender = logger.getAppender("CONSOLE");
+            if (appender != null && appender.isStarted() != enable) {
+                if (enable) {
+                    appender.start();
+                } else {
+                    appender.stop();
+                }
             }
         }
     }
 
     static public String getLog() {
-        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
-        Logger logger = context.getLogger(("ROOT"));
-        Appender<ILoggingEvent> appender = logger.getAppender("LIST");
+        LoggerContext c = (LoggerContext) LoggerFactory.getILoggerFactory();
+        Appender<ILoggingEvent> appender = null;
+        for (Logger logger : c.getLoggerList()) {
+            appender = logger.getAppender("LIST");
+            if (appender instanceof ListAppender) break;
+        }
 
         if (!(appender instanceof ListAppender)) {
             return "No such ListAppender";
         }
 
-        PatternLayout patternLayout = makeLayout(context, true);
+        PatternLayout patternLayout = makeLayout(c, true);
         patternLayout.start();
 
         StringBuilder sb = new StringBuilder();
@@ -146,16 +150,12 @@ public class Log {
     static public void saveLogFile(String name) {
         try (FileOutputStream file = new FileOutputStream(name)) {
             file.write(getLog().getBytes());
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     static {
-        getLogger("ROOT"); // for load logback
-
         // Redirection a system output to logback.
         System.setOut(new LogPrintStream(System.out));
         System.setErr(new LogPrintStream(System.err));

@@ -1,0 +1,39 @@
+<included>
+    <!-- Stop output INFO at start -->
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+
+    <variable resource="logback.properties" />
+
+    <!-- Pattern -->
+    <!-- %.-1level : http://logback.qos.ch/manual/layouts.html : Output just one letter for the level -->
+    <property name="ANDROID_STYLE_PATTERN" value="%d{MM-dd HH:mm:ss.SSS} %3tid{0} %.-1level %logger{0}\(%line\) : %msg%n" />
+    <property name="LOG_PATTERN" value="${log.config.pattern:-${ANDROID_STYLE_PATTERN}}" />
+    <property name="DEFAULT_LEVEL" value="${logback.appender.DEFAULT:-TRACE}" />
+
+    <!-- Custom tid converter -->
+    <!-- http://logback.qos.ch/manual/layouts.html : Creating a custom conversion specifier -->
+    <conversionRule conversionWord="tid" converterClass="com.apkspectrum.logback.pattern.ThreadIdConverter" />
+
+    <!-- Console Appender -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>${LOG_PATTERN}</pattern>
+        </layout>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>${logback.appender.CONSOLE:-${DEFAULT_LEVEL}}</level>
+        </filter>
+    </appender>
+
+    <!-- List Appender -->
+    <appender name="LIST" class="ch.qos.logback.core.read.ListAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>${logback.appender.LIST:-${DEFAULT_LEVEL}}</level>
+        </filter>
+    </appender>
+
+    <!-- logging level -->
+    <logger name="com.apkspectrum" level="${DEFAULT_LEVEL}" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="LIST"/>
+    </logger>
+</included>
